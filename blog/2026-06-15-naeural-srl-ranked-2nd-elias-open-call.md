@@ -10,11 +10,7 @@ The published evaluation ranking of the ELIAS 2nd Open Call lists
 
 {/* truncate */}
 
-The GUARDIAN proposal targets a reusable toolkit and benchmark for
-resource-aware edge AI: a common way to measure whether smaller,
-CPU-first models can carry operational monitoring workloads on commodity
-edge and low-end VPS infrastructure, and how their resource footprint
-compares to larger, centralized alternatives.
+More about the GUARDIAN proposal is on the [About page](/docs/about).
 
 More information on the ELIAS project and its open calls is available at
 [elias-ai.eu](https://elias-ai.eu).

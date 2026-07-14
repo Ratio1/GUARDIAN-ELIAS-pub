@@ -6,7 +6,7 @@ sidebar_position: 2
 
 GUARDIAN's deliverables are described here by output type. Not all
 deliverable content is intended for public release — some contain material
-that is gated pending ethics or partner review. Public summaries of
+that is gated pending review. Public summaries of
 release-approved artifacts will appear here as they become available.
 
 | Deliverable | Output type | Status |
