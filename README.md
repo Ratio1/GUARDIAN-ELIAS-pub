@@ -8,6 +8,25 @@ infrastructure. It is a [Docusaurus](https://docusaurus.io/) v3 site
 
 Everything in this repository is public once pushed.
 
+## Publication boundaries
+
+- Do not state or imply that project funding is in force, that an agreement is
+  executed, or that a kickoff has occurred until an approved publication basis
+  supports that statement.
+- Use the centralized evaluation-status wording in
+  `src/components/FundingStatus.tsx`. Change it only when an approved
+  publication basis supports the new wording.
+- Do not publish partner, mentor, or team-member names, photos, or quotes
+  without written approval for that specific use.
+- Do not add an EU emblem or funding-acknowledgement text until the applicable
+  branding and acknowledgement obligations have been confirmed.
+- Keep use-case descriptions sector-generic unless a named organization or
+  product has been cleared for publication.
+- Describe planned deliverable types without reproducing gated content. Link
+  or embed only release-approved artifacts.
+- Keep use cases advisory-only: no live asset control, automated enforcement,
+  or biometric identification.
+
 ## Local development
 
 Node.js 22 is expected (see `.nvmrc`; `engines.node` in `package.json`
