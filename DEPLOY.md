@@ -16,11 +16,11 @@ tunnel, redeploying on new commits to the tracked branch.
   2. `npm run build`
   3. `npm run serve`
 
-  The third command **must** be `npm run serve`, not the default `npm
-  start`: `npm start` runs the Docusaurus dev server, which binds
-  `localhost` and will not be reachable through the tunnel. `npm run
-  serve` in this repository is configured to bind `0.0.0.0:3000`
-  explicitly.
+  In this repository both `npm run serve` and `npm run start` serve the
+  production build bound to `0.0.0.0:3000`, so either works as the third
+  command. The Docusaurus dev server (which binds `localhost` and is not
+  reachable through the tunnel) is available as `npm run dev` for local
+  development only.
 - **Port:** `3000`
 
 ## Health check
