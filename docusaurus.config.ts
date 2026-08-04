@@ -16,8 +16,7 @@ const config: Config = {
   },
 
   // Set the production url of this site here
-  // PLACEHOLDER — operator sets real domain before first release merge
-  url: 'https://guardian.example.org',
+  url: 'https://edge-guardian.eu',
   // Set the /<baseUrl>/ pathname under which the site is served
   baseUrl: '/',
 
@@ -90,11 +89,16 @@ const config: Config = {
 
   themeConfig: {
     // No analytics, no external fonts, no tracking of any kind.
+    image: 'img/social-card.png',
     colorMode: {
       respectPrefersColorScheme: true,
     },
     navbar: {
       title: 'GUARDIAN',
+      logo: {
+        alt: 'GUARDIAN shield mark',
+        src: 'img/logo.svg',
+      },
       items: [
         {
           type: 'docSidebar',
