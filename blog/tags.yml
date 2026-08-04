@@ -2,3 +2,7 @@ announcement:
   label: Announcement
   permalink: /announcement
   description: Public announcements about the GUARDIAN project
+article:
+  label: Article
+  permalink: /article
+  description: Project articles and technical write-ups
