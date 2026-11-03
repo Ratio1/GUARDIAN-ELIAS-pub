@@ -1,26 +1,35 @@
 ---
 sidebar_position: 7
+description: Organization, licensing, privacy and accessibility information for the GUARDIAN project site.
 ---
+
+import FundingAcknowledgement from '@site/src/components/FundingAcknowledgement';
 
 # Contact & Imprint
 
 ## Organization
 
-GUARDIAN is run by **Naeural SRL**, Bucharest, Romania.
+GUARDIAN is run by **Naeural SRL** (Ratio1), Bucharest, Romania.
 
 - Website: [ratio1.ai](https://ratio1.ai)
 - Repository: [github.com/Ratio1/GUARDIAN-ELIAS-pub](https://github.com/Ratio1/GUARDIAN-ELIAS-pub)
 
 This page lists organization-level contact information only.
 
+## Funding
+
+<FundingAcknowledgement />
+
 ## Content licence
 
 Unless otherwise noted, the content of this site is licensed under
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), with the
-exclusion of the GUARDIAN and Ratio1 logos and trademarks, and any future
-third-party or EU assets, which remain under their own rights. See
-`LICENSE-content.md` in the repository for details. The site's
-configuration code is separately licensed under MIT; see `LICENSE`.
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The licence
+does not cover the GUARDIAN and Ratio1 names, logos and trademarks, or the
+names, logos and marks of ELIAS, the European Union, the validation
+partners or any other third party, which remain under their own rights.
+See [LICENSE-content.md](https://github.com/Ratio1/GUARDIAN-ELIAS-pub/blob/main/LICENSE-content.md)
+for details. The site's configuration code is separately licensed under
+MIT; see [LICENSE](https://github.com/Ratio1/GUARDIAN-ELIAS-pub/blob/main/LICENSE).
 
 ## Privacy
 
