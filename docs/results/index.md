@@ -14,8 +14,8 @@ description: Publications released by the GUARDIAN project, and where measured r
 
 ## Measured results
 
-As of November 2026, no measured results have been published. Validation
-work with MONSSON and Hyperfy (GOC) is in progress.
+As of November 2026, no measured results have been published. Work with
+MONSSON and Hyperfy (GOC) is in progress.
 
 Outputs approved for public release — the benchmark protocol, validation
 report summaries, the public summary, the demo video and any further

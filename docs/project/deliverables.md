@@ -8,7 +8,7 @@ description: GUARDIAN's five deliverables, D1 to D5, with their planned timing i
 GUARDIAN has five deliverables. Timing follows the project's work plan,
 which runs from July to December 2026.
 
-| Deliverable | Output | Planned |
+| Deliverable | Output | Due (work plan) |
 |---|---|---|
 | D1 | Benchmark protocol, data-contract specification, ethics/data-boundary plan and partner validation plan | July 2026 |
 | D2 | Ratio1 resource-aware edge/VPS AI toolkit prototype and reproducible configuration notes | September 2026 |

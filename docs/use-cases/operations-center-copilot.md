@@ -8,8 +8,8 @@ description: GUARDIAN's operations-center co-pilot demonstrator with Hyperfy (GO
 **Validation partner:** [Hyperfy](https://hyperfy.tech/) (GOC) ·
 **Status:** in progress · **Report:** D4, planned for November 2026
 
-This use case demonstrates transfer of the GUARDIAN toolkit and benchmark
-to a structurally different context: an operations-center co-pilot that
+This use case is designed to demonstrate transfer of the GUARDIAN toolkit
+and benchmark to a structurally different context: an operations-center co-pilot that
 surfaces relevant information from operational feeds to a human operator
 in a physical-security setting. It is one bounded demonstrator, built on
 the same toolkit and benchmark as the energy-sector validation.

@@ -14,16 +14,16 @@ task that produces that information). Scenarios are operationally
 motivated; their inputs are approved partner data, derived data or
 synthetic data.
 
-GUARDIAN's workloads use smaller models running CPU-first, including
-small language models (SLMs) — for example, second-opinion agents in the
+GUARDIAN's workloads are designed around smaller models running
+CPU-first, including small language models (SLMs) — for example, second-opinion agents in the
 energy-sector validation and an operations-center co-pilot in the
 physical-security demonstrator. See the [use cases](../use-cases/energy-monitoring.md)
 for both scenarios.
 
 ## Execution profiles
 
-Each scenario-workload pair is measured across multiple **execution
-profiles**, so the same workload's resource/quality trade-off is comparable
+Each scenario-workload pair is to be measured across multiple
+**execution profiles**, so the same workload's resource/quality trade-off is comparable
 across hardware tiers:
 
 - Low-power edge

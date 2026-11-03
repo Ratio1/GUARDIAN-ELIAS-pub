@@ -19,7 +19,8 @@ timeline (M1 = July 2026, M6 = December 2026):
 | WP4 | Operations-center co-pilot demonstrator with Hyperfy (GOC) | M4–M5 (October–November) |
 | WP5 | Evaluation, dissemination and handover | M6 (December) |
 
-Current work focuses on the two validation scenarios; see the
+Work is progressing with both validation partners, MONSSON and Hyperfy
+(GOC); see the
 [November 2026 update](/blog/guardian-progressing-with-monsson-and-hyperfy).
 
 See [Deliverables](./deliverables.md) for the outputs each work package
