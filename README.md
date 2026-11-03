@@ -10,22 +10,37 @@ Everything in this repository is public once pushed.
 
 ## Publication boundaries
 
-- Do not state or imply that project funding is in force, that an agreement is
-  executed, or that a kickoff has occurred until an approved publication basis
-  supports that statement.
-- Use the centralized evaluation-status wording in
-  `src/components/FundingStatus.tsx`. Change it only when an approved
-  publication basis supports the new wording.
-- Do not publish partner, mentor, or team-member names, photos, or quotes
-  without written approval for that specific use.
-- Do not add an EU emblem or funding-acknowledgement text until the applicable
-  branding and acknowledgement obligations have been confirmed.
-- Keep use-case descriptions sector-generic unless a named organization or
-  product has been cleared for publication.
-- Describe planned deliverable types without reproducing gated content. Link
-  or embed only release-approved artifacts.
+- The current project-status line lives in `src/components/FundingStatus.tsx`.
+  Render that component wherever the current status is shown instead of
+  restating it, and update the wording there only.
+- Use the standard funding acknowledgement from
+  `src/components/FundingAcknowledgement.tsx` (news posts carry the same
+  wording inline). Grant agreement No. 101120237 belongs to ELIAS, the parent
+  Horizon Europe project; always attribute it to ELIAS.
+- Describe GUARDIAN's link to ELIAS as reuse and handover of results, never as
+  integration into, certification against, or deployment inside ELIAS
+  systems.
+- Do not publish budget, payment or other contract details beyond the funding
+  acknowledgement and the project period (1 July to 31 December 2026).
+- The validation partners MONSSON and Hyperfy (GOC) may be named when
+  describing their validation scenarios. Partner logos, quotes, interface
+  captures, client imagery and operational data need explicit approval for
+  each use.
+- Do not publish names, photos or quotes of individuals without their
+  written approval.
+- Do not add the EU emblem or any other third-party logo or mark without
+  explicit approval for that use.
+- Describe work in progress as in progress. Do not claim measured results,
+  completed validation, targets met, a reached TRL or partner deployments
+  until the evidence is released. TRL wording: baseline TRL 4, targeting
+  TRL 5.
+- Report environmental aspects as measured resource indicators only; no
+  carbon-reduction or similar environmental claims without a defensible
+  method.
+- Publish only synthetic, anonymized, aggregated or partner-approved derived
+  data. Link or embed only artifacts approved for public release.
 - Keep use cases advisory-only: no live asset control, automated enforcement,
-  or biometric identification.
+  live dispatch or biometric identification.
 
 ## Local development
 
