@@ -47,6 +47,11 @@ jobs:
             grep -qi "^$h:" headers.txt || { echo "missing header: $h"; exit 1; }
           done
           test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/no-such-page)" = 404
+          # Paths with a `..` segment are rejected, also when percent-encoded,
+          # and only real content-hashed files are cached as immutable.
+          test "$(curl -s -o /dev/null -w '%{http_code}' --path-as-is 'http://127.0.0.1:3000/assets/%2e%2e/search-index.json')" = 400
+          curl -fsS -D index-headers.txt -o /dev/null 'http://127.0.0.1:3000/%73earch-index.json'
+          grep -qi '^cache-control: no-cache' index-headers.txt
           redirect="$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' \
             -H 'Host: edge-guardian.eu' -H 'CF-Visitor: {"scheme":"http"}' http://127.0.0.1:3000/docs/about/)"
           test "$redirect" = "301 https://edge-guardian.eu/docs/about/"

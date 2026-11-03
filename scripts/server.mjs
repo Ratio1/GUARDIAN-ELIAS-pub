@@ -4,6 +4,8 @@
 //   site: serve-handler with clean URLs, no directory listing, and the
 //   generated 404 page for unknown paths (this site uses baseUrl "/").
 // - Adds security headers to every response and sets cache headers.
+// - Rejects request paths that contain a `..` segment (also when
+//   percent-encoded) with 400 before they reach serve-handler.
 // - Redirects HTTP to HTTPS when, and only when, the Cloudflare `CF-Visitor`
 //   request header reports that the visitor used plain HTTP. Requests without
 //   that header (local requests, health checks) are served directly, so there
@@ -43,14 +45,27 @@ function parseIntEnv(name, fallback, min, max) {
   return value;
 }
 
-function walkHtml(dir) {
+function walkFiles(dir) {
   const out = [];
   for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...walkHtml(full));
-    else if (entry.isFile() && entry.name.endsWith('.html')) out.push(full);
+    if (entry.isDirectory()) out.push(...walkFiles(full));
+    else if (entry.isFile()) out.push(full);
   }
   return out;
+}
+
+// URL paths of the files that Docusaurus emits under /assets/ with a content
+// hash in their name (for example /assets/js/main.0123abcd.js). Only these
+// are cached as immutable.
+function hashedAssetPaths(dir) {
+  const assetsDir = path.join(dir, 'assets');
+  if (!fs.existsSync(assetsDir)) return new Set();
+  return new Set(
+    walkFiles(assetsDir)
+      .filter((file) => /[.-][0-9a-f]{8,}\.[a-z0-9]+$/i.test(path.basename(file)))
+      .map((file) => '/' + path.relative(dir, file).split(path.sep).join('/')),
+  );
 }
 
 // Docusaurus emits a few small inline scripts (for example the colour-mode
@@ -61,7 +76,7 @@ function inlineScriptHashes(dir) {
   const scriptRe = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
   const typeRe = /\btype\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i;
   const executableTypes = new Set(['', 'text/javascript', 'application/javascript', 'module']);
-  for (const file of walkHtml(dir)) {
+  for (const file of walkFiles(dir).filter((f) => f.endsWith('.html'))) {
     const html = fs.readFileSync(file, 'utf8');
     for (const [, attrs, body] of html.matchAll(scriptRe)) {
       if (/\bsrc\s*=/i.test(attrs) || body.length === 0) continue;
@@ -109,9 +124,11 @@ const SECURITY_HEADERS = {
   'Cross-Origin-Opener-Policy': 'same-origin',
 };
 
+const HASHED_ASSETS = hashedAssetPaths(BUILD_DIR);
 const HASHED_ASSET_CACHE = 'public, max-age=31536000, immutable';
 const REVALIDATE_CACHE = 'no-cache';
 const HOST_RE = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
+const DOT_SEGMENT_RE = /(^|[/\\])\.\.([/\\]|$)/;
 
 // True only when Cloudflare reports that the visitor connected over plain HTTP.
 // X-Forwarded-Proto alone is deliberately not trusted.
@@ -132,12 +149,30 @@ function httpsLocation(req) {
   return `https://${hostname.toLowerCase()}${target}`;
 }
 
+// The request path as serve-handler resolves it: query and fragment removed,
+// backslashes read as slashes, percent-decoded once. Null if it cannot be decoded.
+function decodedPathname(url) {
+  const pathname = String(url || '/').split(/[?#]/, 1)[0].replace(/\\/g, '/');
+  try {
+    return decodeURIComponent(pathname);
+  } catch {
+    return null;
+  }
+}
+
 function handle(req, res) {
   for (const [name, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(name, value);
 
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     res.writeHead(405, {Allow: 'GET, HEAD', 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store'});
     res.end('Method Not Allowed\n');
+    return;
+  }
+
+  const pathname = decodedPathname(req.url);
+  if (pathname === null || pathname.includes('\0') || DOT_SEGMENT_RE.test(pathname)) {
+    res.writeHead(400, {'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store'});
+    res.end('Bad Request\n');
     return;
   }
 
@@ -150,14 +185,15 @@ function handle(req, res) {
     }
   }
 
-  // Cache policy depends on the final status, so decide it when headers are written.
-  // Docusaurus content-hashes every file under /assets/.
-  const pathname = (req.url || '/').split('?')[0];
+  // Cache policy depends on the file served and the final status, so decide it
+  // when headers are written. serve-handler serves the file at the normalised
+  // decoded path, so only real content-hashed files are cached as immutable.
+  const hashedAsset = HASHED_ASSETS.has(path.posix.normalize(pathname));
   const writeHead = res.writeHead;
   res.writeHead = function (statusCode, ...rest) {
     if (!res.hasHeader('Cache-Control')) {
       const cacheable = statusCode === 200 || statusCode === 206 || statusCode === 304;
-      res.setHeader('Cache-Control', cacheable && pathname.startsWith('/assets/') ? HASHED_ASSET_CACHE : REVALIDATE_CACHE);
+      res.setHeader('Cache-Control', cacheable && hashedAsset ? HASHED_ASSET_CACHE : REVALIDATE_CACHE);
     }
     return writeHead.call(this, statusCode, ...rest);
   };
@@ -178,7 +214,7 @@ function handle(req, res) {
   };
 
   serveHandler(req, res, {public: BUILD_DIR, cleanUrls: true, directoryListing: false, etag: false}, methods).catch((err) => {
-    log(`error serving ${pathname}: ${err && err.stack ? err.stack : err}`);
+    log(`error serving ${req.url}: ${err && err.stack ? err.stack : err}`);
     if (!res.headersSent) {
       res.writeHead(500, {'Content-Type': 'text/plain; charset=utf-8'});
       res.end('Internal Server Error\n');
@@ -200,7 +236,10 @@ server.on('error', (err) => {
 });
 
 server.listen(PORT, HOST, () => {
-  log(`serving ${BUILD_DIR} on http://${HOST}:${PORT} (${scriptHashes.length} inline script hash(es) in CSP)`);
+  log(
+    `serving ${BUILD_DIR} on http://${HOST}:${PORT} (${scriptHashes.length} inline script hash(es) in CSP, ` +
+      `${HASHED_ASSETS.size} immutable asset(s))`,
+  );
 });
 
 function shutdown(signal) {
