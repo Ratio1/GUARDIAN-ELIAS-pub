@@ -11,9 +11,9 @@ tags: [announcement]
 GUARDIAN is progressing with both of its validation partners:
 [MONSSON](https://www.monsson.eu/) in the energy sector and
 [Hyperfy](https://hyperfy.tech/) (GOC) in physical security. Both strands
-apply the same idea: small language models (SLMs) running on modest,
-CPU-first infrastructure close to the data, with a human operator making
-every decision.
+apply the same idea: smaller models, including small language models
+(SLMs), running on modest, CPU-first infrastructure close to the data,
+with a human operator making every decision.
 
 {/* truncate */}
 
@@ -29,8 +29,11 @@ With MONSSON, GUARDIAN is working on SLM-based second-opinion agents for
 energy-sector operations centers, in renewable-storage and
 virtual-power-plant monitoring scenarios. Such an agent is designed to
 review monitoring alerts and give the operator a second opinion: what it
-noticed, why, and how uncertain it is. The operator decides what, if anything, to do. This
-is GUARDIAN's primary validation route. More on the
+noticed, why, and how uncertain it is. The operator decides what, if anything, to do. Each
+agent is a workload under the GUARDIAN benchmark, to be measured for
+latency, data locality and resource footprint across low-power edge,
+low-end VPS, local-server and central/cloud profiles. This is GUARDIAN's
+primary validation route. More on the
 [energy-sector use case](/docs/use-cases/energy-monitoring).
 
 ## Physical security: efficient SLM deployment in a co-pilot demonstrator with Hyperfy (GOC)
@@ -46,10 +49,10 @@ clustering, false-alarm review and event summarization. More on the
 ## Boundaries
 
 Both scenarios are advisory-only: operators stay in control, and GUARDIAN
-performs no autonomous live asset control, automated enforcement,
-biometric identification or live dispatch. The work uses synthetic,
-derived or approved anonymized data, and no raw operational data or
-security media are published.
+performs no live asset control, automated enforcement, biometric
+identification or live dispatch. The work uses approved partner, derived,
+anonymized or synthetic data, and no raw operational data or security
+media are published.
 
 ## What comes next
 
