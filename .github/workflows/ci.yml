@@ -55,6 +55,9 @@ jobs:
           redirect="$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' \
             -H 'Host: edge-guardian.eu' -H 'CF-Visitor: {"scheme":"http"}' http://127.0.0.1:3000/docs/about/)"
           test "$redirect" = "301 https://edge-guardian.eu/docs/about/"
+          # Hosts outside CANONICAL_HOSTS are served without a redirect.
+          test "$(curl -s -o /dev/null -w '%{http_code}' \
+            -H 'Host: other.example' -H 'CF-Visitor: {"scheme":"http"}' http://127.0.0.1:3000/docs/about/)" = 200
           cat server.log
 
       - name: Check the production server for file-descriptor leaks

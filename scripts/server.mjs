@@ -7,12 +7,15 @@
 // - Rejects request paths that contain a `..` segment (also when
 //   percent-encoded) with 400 before they reach serve-handler.
 // - Redirects HTTP to HTTPS when, and only when, the Cloudflare `CF-Visitor`
-//   request header reports that the visitor used plain HTTP. Requests without
-//   that header (local requests, health checks) are served directly, so there
+//   request header reports that the visitor used plain HTTP and the Host is
+//   one of CANONICAL_HOSTS. Requests without that header (local requests,
+//   health checks) and requests for other hosts are served directly, so there
 //   is no redirect loop behind the tunnel.
 //
 // Environment: PORT (default 3000), HOST (default 0.0.0.0),
-//              HSTS_MAX_AGE (seconds, default 86400).
+//              HSTS_MAX_AGE (seconds, default 86400),
+//              CANONICAL_HOSTS (comma-separated hostnames that may be
+//              redirected to HTTPS, default "edge-guardian.eu,www.edge-guardian.eu").
 //
 // Normally started through scripts/supervise.mjs (`npm start`), which
 // restarts this process if it exits.
@@ -26,9 +29,11 @@ import serveHandler from 'serve-handler';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BUILD_DIR = path.join(ROOT, 'build');
+const HOST_RE = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
 const HOST = process.env.HOST || '0.0.0.0';
 const PORT = parseIntEnv('PORT', 3000, 1, 65535);
 const HSTS_MAX_AGE = parseIntEnv('HSTS_MAX_AGE', 86400, 0, 63072000);
+const CANONICAL_HOSTS = parseHostsEnv('CANONICAL_HOSTS', 'edge-guardian.eu,www.edge-guardian.eu');
 
 function log(message) {
   console.log(`[server] ${new Date().toISOString()} ${message}`);
@@ -43,6 +48,17 @@ function parseIntEnv(name, fallback, min, max) {
     process.exit(2);
   }
   return value;
+}
+
+function parseHostsEnv(name, fallback) {
+  const raw = process.env[name];
+  const value = raw === undefined || raw.trim() === '' ? fallback : raw;
+  const hosts = value.split(',').map((h) => h.trim().toLowerCase()).filter(Boolean);
+  if (hosts.length === 0 || !hosts.every((h) => HOST_RE.test(h))) {
+    log(`invalid ${name}=${JSON.stringify(raw)}; expected comma-separated hostnames`);
+    process.exit(2);
+  }
+  return new Set(hosts);
 }
 
 function walkFiles(dir) {
@@ -127,7 +143,6 @@ const SECURITY_HEADERS = {
 const HASHED_ASSETS = hashedAssetPaths(BUILD_DIR);
 const HASHED_ASSET_CACHE = 'public, max-age=31536000, immutable';
 const REVALIDATE_CACHE = 'no-cache';
-const HOST_RE = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
 const DOT_SEGMENT_RE = /(^|[/\\])\.\.([/\\]|$)/;
 
 // True only when Cloudflare reports that the visitor connected over plain HTTP.
@@ -142,11 +157,13 @@ function visitorUsedHttp(req) {
   }
 }
 
+// The HTTPS URL for the same host and path, or null when the host is not one
+// of CANONICAL_HOSTS (such requests are served without a redirect).
 function httpsLocation(req) {
-  const hostname = String(req.headers.host || '').replace(/:\d+$/, '');
-  if (!HOST_RE.test(hostname)) return null;
+  const hostname = String(req.headers.host || '').toLowerCase().replace(/:\d+$/, '');
+  if (!CANONICAL_HOSTS.has(hostname)) return null;
   const target = typeof req.url === 'string' && req.url.startsWith('/') ? req.url : '/';
-  return `https://${hostname.toLowerCase()}${target}`;
+  return `https://${hostname}${target}`;
 }
 
 // The request path as serve-handler resolves it: query and fragment removed,
@@ -238,7 +255,7 @@ server.on('error', (err) => {
 server.listen(PORT, HOST, () => {
   log(
     `serving ${BUILD_DIR} on http://${HOST}:${PORT} (${scriptHashes.length} inline script hash(es) in CSP, ` +
-      `${HASHED_ASSETS.size} immutable asset(s))`,
+      `${HASHED_ASSETS.size} immutable asset(s), HTTPS redirect for ${[...CANONICAL_HOSTS].join(', ')})`,
   );
 });
 
