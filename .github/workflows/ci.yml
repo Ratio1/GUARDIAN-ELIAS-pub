@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: npm ci --no-fund
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Smoke-test the production server
+        run: |
+          set -euo pipefail
+          PORT=3000 node scripts/server.mjs > server.log 2>&1 &
+          for _ in $(seq 1 30); do
+            curl -fsS -o /dev/null http://127.0.0.1:3000/ && break
+            sleep 1
+          done
+          curl -fsS -D headers.txt -o /dev/null http://127.0.0.1:3000/
+          for h in content-security-policy strict-transport-security x-content-type-options x-frame-options; do
+            grep -qi "^$h:" headers.txt || { echo "missing header: $h"; exit 1; }
+          done
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/no-such-page)" = 404
+          redirect="$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' \
+            -H 'Host: edge-guardian.eu' -H 'CF-Visitor: {"scheme":"http"}' http://127.0.0.1:3000/docs/about/)"
+          test "$redirect" = "301 https://edge-guardian.eu/docs/about/"
+          cat server.log

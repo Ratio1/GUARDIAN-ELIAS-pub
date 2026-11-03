@@ -1,0 +1,46 @@
+name: Uptime
+
+# Checks the public site every 15 minutes. A failed run means the site is
+# down, serving the wrong content, or missing its HTTPS protections; GitHub
+# then sends its standard failed-workflow notification.
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      SITE: edge-guardian.eu
+    steps:
+      - name: Check site
+        run: |
+          set -uo pipefail
+          check() {
+            local ok=0
+            # The home page and one docs page must return 200 with a rendered page.
+            for path in / /docs/about/; do
+              code=$(curl -sS --max-time 20 -o page.html -D headers.txt -w '%{http_code}' "https://$SITE$path") || code=000
+              if [ "$code" != 200 ]; then echo "https://$SITE$path returned $code"; ok=1; continue; fi
+              grep -Eq 'name="?generator"? content="?Docusaurus' page.html \
+                || { echo "https://$SITE$path: page marker not found"; ok=1; }
+              grep -qi '^strict-transport-security:' headers.txt || { echo "https://$SITE$path: HSTS header missing"; ok=1; }
+            done
+            # Plain HTTP must redirect permanently to HTTPS.
+            redirect=$(curl -sS --max-time 20 -o /dev/null -w '%{http_code} %{redirect_url}' "http://$SITE/docs/about/") || redirect=error
+            [ "$redirect" = "301 https://$SITE/docs/about/" ] || { echo "http://$SITE/docs/about/ gave '$redirect'"; ok=1; }
+            return $ok
+          }
+          # Every push to main redeploys the site with a few minutes of downtime,
+          # so retry before reporting a failure.
+          for attempt in 1 2 3 4; do
+            if check; then echo "Site OK (attempt $attempt)"; exit 0; fi
+            [ "$attempt" -lt 4 ] && sleep 90
+          done
+          echo "Site check failed after 4 attempts"
+          exit 1
