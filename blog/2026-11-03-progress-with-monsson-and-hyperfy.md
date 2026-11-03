@@ -40,7 +40,7 @@ primary validation route. More on the
 
 With Hyperfy (GOC), GUARDIAN is working on efficient SLM deployment —
 running small language models on CPU-first edge and VPS infrastructure —
-demonstrated in one bounded operations-center co-pilot scenario for
+to be demonstrated in one bounded operations-center co-pilot scenario for
 physical security. This is a demonstrator, not a deployment in a
 partner's live operations center. Candidate tasks include alarm
 clustering, false-alarm review and event summarization. More on the
