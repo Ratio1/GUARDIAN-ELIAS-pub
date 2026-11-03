@@ -12,14 +12,16 @@ hostname.
   commits about once a minute. When it sees one, it replaces the running
   container: fresh clone, `npm install`, `npm run build`, `npm start`.
 - **Every push to `main` is published.** The new commit is picked up within
-  about a minute and is live once the rebuild finishes (typically 2–4 minutes
-  on one CPU). The site is unavailable while the replacement container
-  installs and builds.
+  a minute or two (longer if GitHub rate-limits the runner) and is live once
+  the rebuild finishes (typically 2–4 minutes on one CPU). The site is
+  unavailable while the replacement container installs and builds.
 - Propose changes through pull requests against `main`. The CI workflow runs
   on every pull request, so a change can be reviewed and seen to build before
   it is merged and published.
 
-## Job settings
+## Recommended job settings
+
+Apply these in the job's settings in the Deeploy console.
 
 | Setting | Value |
 | --- | --- |
@@ -61,6 +63,9 @@ hostname.
   404 page with status `404` for unknown paths. It listens on `0.0.0.0:3000`;
   set `PORT` (and optionally `HOST`) to change that. Only `GET` and `HEAD`
   are accepted.
+- **Request paths.** A request whose path contains a `..` segment, also when
+  it is percent-encoded (for example `%2e%2e`), is answered with
+  `400 Bad Request` before any file is looked up.
 - **Security headers** on every response, including redirects and 404s:
   - `Strict-Transport-Security: max-age=86400` (one day, see below);
   - `Content-Security-Policy`: only same-origin scripts, styles, images,
@@ -80,18 +85,27 @@ hostname.
   from other origins. Commit images and other files to the repository
   instead. Embedding third-party content requires a reviewed change to the
   policy in `scripts/server.mjs`.
-- **Caching.** Files under `/assets/` have content-hashed names and are sent
-  with `Cache-Control: public, max-age=31536000, immutable`. Everything else
-  (HTML pages, images in `/img/`, the search index, feeds, the sitemap, 404
-  and error responses) is sent with `Cache-Control: no-cache` and an `ETag`,
-  so browsers revalidate and always see the current version.
+- **Caching.** The content-hashed files that Docusaurus writes under
+  `/assets/` are sent with `Cache-Control: public, max-age=31536000,
+  immutable`. The server lists those files in `build/assets/` at startup and
+  matches the decoded, normalised request path against that list, so no
+  other file is ever cached as immutable. Everything else (HTML pages, images
+  in `/img/`, the search index, feeds, the sitemap, 404 and error responses)
+  is sent with `Cache-Control: no-cache` and a `Last-Modified` date, so
+  browsers check with the server before reusing a copy and always see the
+  current version. As with `docusaurus serve`, no `ETag` is sent and every
+  request gets the full file rather than `304 Not Modified`.
 - **HTTP to HTTPS.** When the Cloudflare `CF-Visitor` request header reports
-  that the visitor used plain HTTP, the server answers
-  `301 Moved Permanently` with `Location: https://<host><path>`. The
-  redirect is triggered only by that header: requests without it (local
-  requests, the runner's health check) are served directly, so there is no
-  redirect loop behind the tunnel. `X-Forwarded-Proto` is not trusted on its
-  own.
+  that the visitor used plain HTTP and the request's `Host` is one of the
+  site's own hostnames, the server answers `301 Moved Permanently` with
+  `Location: https://<same host><path>`. The hostnames come from the
+  `CANONICAL_HOSTS` environment variable (comma-separated, default
+  `edge-guardian.eu,www.edge-guardian.eu`); requests for any other host are
+  served without a redirect. An invalid value makes the server refuse to
+  start, with an error in the job log. The redirect is triggered only by
+  that header: requests without it (local requests, the runner's health
+  check) are served directly, so there is no redirect loop behind the
+  tunnel. `X-Forwarded-Proto` is not trusted on its own.
 - **Supervision.** If the server process exits for any reason (crash, port
   already in use, missing build output, killed by the system), the
   supervisor logs the exit and starts it again after a short backoff (1 s,
@@ -133,8 +147,12 @@ activity; re-enable the workflow from the Actions tab if that happens.
 
 The `CI` workflow (`.github/workflows/ci.yml`) runs on every push to `main`
 and on every pull request: `npm ci`, `npm run typecheck`, `npm run build`,
-and a smoke test of the production server (headers, 404 and the HTTPS
-redirect). It uses the Node.js version in `.nvmrc`.
+a smoke test of the production server (headers, 404, rejected `..` paths,
+caching and the HTTPS redirect), and `scripts/check-fd-leak.mjs`, which
+sends repeated conditional requests and aborted downloads to the server and
+fails if its count of open file descriptors grows. It uses the Node.js
+version in `.nvmrc`, and its third-party actions are pinned to full commit
+SHAs.
 
 ## Rolling back
 
@@ -153,5 +171,6 @@ the history intact and is published the same way.
 
 - Everything pushed to `main` is public and goes live; review changes in a
   pull request first.
-- No credentials or secrets are needed to build or serve this site; do not
-  add any to the repository or to the job configuration.
+- Building and serving the site need no credentials. The only secret in the
+  job is the Cloudflare tunnel token in its tunnel settings; never commit it,
+  and do not add a GitHub token or other credentials to the job.
