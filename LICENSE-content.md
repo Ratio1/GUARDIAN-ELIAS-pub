@@ -15,16 +15,23 @@ The following are **not** covered by CC BY 4.0 and remain under their own
 rights:
 
 - The GUARDIAN and Ratio1 names, logos and trademarks.
+- The European Union emblem with the statement "Funded by the European
+  Union" (`static/img/eu-emblem-funded-by-the-eu.png`), shown in the site
+  footer. It is the official file made available by the European
+  Commission, reproduced unmodified to acknowledge EU funding as the
+  funding rules require. Its use is governed by the European Union's rules
+  on the use of the EU emblem, not by this licence or by the MIT licence.
 - The names, logos and marks of ELIAS, the European Union, the project's
   validation partners (MONSSON and Hyperfy) and any other third party.
   The site mentions these names to identify the organizations involved;
   this does not grant any right to use their marks.
-- Any European Union emblem, partner logo or other third-party asset. Such
-  assets are added to this site only with explicit approval for that use
-  and stay under the terms of their owners.
+- Any partner logo or other third-party asset. Such assets are added to
+  this site only with explicit approval for that use and stay under the
+  terms of their owners.
 
 ## Code
 
 The site's configuration and source code (everything outside `docs/`,
 `blog/`, and the page and component copy in `src/`) is licensed
-separately under MIT — see `LICENSE`.
+separately under MIT — see `LICENSE`. The MIT licence does not cover the
+EU emblem or the other names, logos and marks listed above.

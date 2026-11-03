@@ -28,8 +28,16 @@ Everything in this repository is public once pushed.
   each use.
 - Do not publish names, photos or quotes of individuals without their
   written approval.
-- Do not add the EU emblem or any other third-party logo or mark without
-  explicit approval for that use.
+- The site footer shows, on every page, the European Union emblem with the
+  statement "Funded by the European Union" and the funding disclaimer, as
+  the funding rules require. Use the official emblem file
+  (`static/img/eu-emblem-funded-by-the-eu.png`) unmodified: keep it
+  distinct and separate, do not combine it with other marks, text or
+  links, use no other logo to highlight EU support, and show it at least
+  as prominently as any other logo displayed with it. Keep the disclaimer
+  wording unchanged.
+- Do not add any other third-party logo or mark without explicit approval
+  for that use.
 - Describe work in progress as in progress. Do not claim measured results,
   completed validation, targets met, a reached TRL or partner deployments
   until the evidence is released. TRL wording: baseline TRL 4, targeting
