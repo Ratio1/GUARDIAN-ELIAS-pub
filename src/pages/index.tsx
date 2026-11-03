@@ -87,8 +87,8 @@ function HomepageProgress() {
           <Link to="/docs/use-cases/operations-center-copilot">
             Hyperfy (GOC)
           </Link>
-          , on efficient small-language-model deployment for physical-security
-          operations.{' '}
+          , on efficient SLM deployment on CPU-first edge and VPS
+          infrastructure in a physical-security co-pilot demonstrator.{' '}
           <Link to="/blog/guardian-progressing-with-monsson-and-hyperfy">
             Read the November 2026 update
           </Link>

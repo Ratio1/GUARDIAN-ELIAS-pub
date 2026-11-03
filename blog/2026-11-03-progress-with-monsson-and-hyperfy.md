@@ -1,7 +1,7 @@
 ---
 slug: guardian-progressing-with-monsson-and-hyperfy
 title: GUARDIAN progresses with MONSSON and Hyperfy
-description: GUARDIAN is progressing with both validation partners — SLM-based second-opinion agents for energy-sector operations with MONSSON, and efficient small-language-model deployment for physical-security operations with Hyperfy (GOC).
+description: GUARDIAN is progressing with both validation partners — SLM-based second-opinion agents for energy-sector operations with MONSSON, and efficient SLM deployment on CPU-first edge and VPS infrastructure in a physical-security co-pilot demonstrator with Hyperfy (GOC).
 authors: [guardian-team]
 tags: [announcement]
 ---
@@ -33,13 +33,14 @@ noticed, why, and how uncertain it is. The operator decides what, if anything, t
 is GUARDIAN's primary validation route. More on the
 [energy-sector use case](/docs/use-cases/energy-monitoring).
 
-## Physical security: efficient SLM deployment with Hyperfy (GOC)
+## Physical security: efficient SLM deployment in a co-pilot demonstrator with Hyperfy (GOC)
 
-With Hyperfy (GOC), GUARDIAN is working on efficient SLM deployment for a
-physical-security operations center: running small models on CPU-first
-edge and VPS infrastructure for one bounded co-pilot scenario. Candidate
-tasks include alarm clustering, false-alarm review and event
-summarization. More on the
+With Hyperfy (GOC), GUARDIAN is working on efficient SLM deployment —
+running small language models on CPU-first edge and VPS infrastructure —
+demonstrated in one bounded operations-center co-pilot scenario for
+physical security. This is a demonstrator, not a deployment in a
+partner's live operations center. Candidate tasks include alarm
+clustering, false-alarm review and event summarization. More on the
 [operations-center use case](/docs/use-cases/operations-center-copilot).
 
 ## Boundaries

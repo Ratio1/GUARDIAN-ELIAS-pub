@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-description: GUARDIAN's operations-center co-pilot demonstrator — efficient small-language-model deployment for physical-security operations, with Hyperfy (GOC).
+description: GUARDIAN's operations-center co-pilot demonstrator with Hyperfy (GOC) — efficient small-language-model (SLM) deployment on CPU-first edge and VPS infrastructure, demonstrated in one bounded physical-security scenario.
 ---
 
 # Operations-Center Co-Pilot
@@ -17,10 +17,12 @@ the same toolkit and benchmark as the energy-sector validation.
 ## Efficient SLM deployment
 
 With Hyperfy (GOC), GUARDIAN is working on **efficient deployment of
-small language models (SLMs)** for a physical-security operations center:
-running small models on CPU-first edge and VPS infrastructure for one
-co-pilot scenario, and measuring the resources this takes. Candidate
-tasks include alarm clustering, false-alarm review, event summarization,
+small language models (SLMs)**: running small models on CPU-first edge
+and VPS infrastructure, demonstrated in one bounded co-pilot scenario for
+a physical-security operations center; the benchmark is designed to
+measure the resources this takes. This is a demonstrator, not a
+deployment in a partner's live operations center. Candidate tasks
+include alarm clustering, false-alarm review, event summarization,
 incident-note drafting and response-queue explanation.
 
 ## Data
