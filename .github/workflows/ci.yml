@@ -51,3 +51,6 @@ jobs:
             -H 'Host: edge-guardian.eu' -H 'CF-Visitor: {"scheme":"http"}' http://127.0.0.1:3000/docs/about/)"
           test "$redirect" = "301 https://edge-guardian.eu/docs/about/"
           cat server.log
+
+      - name: Check the production server for file-descriptor leaks
+        run: node scripts/check-fd-leak.mjs

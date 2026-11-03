@@ -162,12 +162,22 @@ function handle(req, res) {
     return writeHead.call(this, statusCode, ...rest);
   };
 
-  serveHandler(req, res, {
-    public: BUILD_DIR,
-    cleanUrls: true,
-    directoryListing: false,
-    etag: true,
-  }).catch((err) => {
+  // ETags stay off, as in `docusaurus serve`: serve-handler answers a matching
+  // If-None-Match with 304 without closing the file it has already opened.
+  // Responses carry Last-Modified instead. serve-handler also pipes files with
+  // stream.pipe(), which leaves the file open when the response closes early
+  // (for example an aborted download), so close every file stream when its
+  // response closes.
+  const methods = {
+    createReadStream(file, options) {
+      const stream = fs.createReadStream(file, options);
+      if (res.destroyed) stream.destroy();
+      else res.once('close', () => stream.destroy());
+      return stream;
+    },
+  };
+
+  serveHandler(req, res, {public: BUILD_DIR, cleanUrls: true, directoryListing: false, etag: false}, methods).catch((err) => {
     log(`error serving ${pathname}: ${err && err.stack ? err.stack : err}`);
     if (!res.headersSent) {
       res.writeHead(500, {'Content-Type': 'text/plain; charset=utf-8'});
