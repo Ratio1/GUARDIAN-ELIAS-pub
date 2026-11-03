@@ -13,6 +13,12 @@ const config: Config = {
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
+    faster: {
+      // The production host builds from a fresh clone on every deploy, so an
+      // on-disk bundler cache is never reused; disabling it cuts peak build
+      // memory by roughly 90 MB and keeps the build within a 512 MB container.
+      rspackPersistentCache: false,
+    },
   },
 
   // Set the production url of this site here
