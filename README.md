@@ -10,9 +10,14 @@ Everything in this repository is public once pushed.
 
 ## Publication boundaries
 
-- The current project-status line lives in `src/components/FundingStatus.tsx`.
-  Render that component wherever the current status is shown instead of
-  restating it, and update the wording there only.
+- `src/components/FundingStatus.tsx` holds the canonical project-status
+  wording (support through the ELIAS 2nd FSTP Open Call, the call ranking
+  and the project period). The landing page, the Evaluation Result page and
+  the open-call news post render it. The support statement and the project
+  period are also restated on the About, Objectives, Expected Outputs,
+  What is ELIAS?, The 2nd Open Call & FSTP, Work Plan and Deliverables
+  pages and in the news posts; when the status changes, update the
+  component and all of these together.
 - Use the standard funding acknowledgement from
   `src/components/FundingAcknowledgement.tsx` (news posts carry the same
   wording inline). Grant agreement No. 101120237 belongs to ELIAS, the parent
@@ -21,7 +26,8 @@ Everything in this repository is public once pushed.
   integration into, certification against, or deployment inside ELIAS
   systems.
 - Do not publish budget, payment or other contract details beyond the funding
-  acknowledgement and the project period (1 July to 31 December 2026).
+  acknowledgement, the project period (1 July to 31 December 2026) and the
+  effort figure already published in the August 2026 article.
 - The validation partners MONSSON and Hyperfy (GOC) may be named when
   describing their validation scenarios. Partner logos, quotes, interface
   captures, client imagery and operational data need explicit approval for

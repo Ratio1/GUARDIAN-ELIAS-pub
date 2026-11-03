@@ -1,9 +1,11 @@
 import type {ReactNode} from 'react';
 
-// The current project-status line, shown on the landing page, the
-// Evaluation Result page and the open-call news post. Pages render this
-// component instead of restating the status, so the wording is changed in
-// one place only.
+// The canonical project-status line, rendered on the landing page, the
+// Evaluation Result page and the open-call news post. The support statement
+// and the project period are also restated in prose on the About,
+// Objectives, Expected Outputs, What is ELIAS?, The 2nd Open Call & FSTP,
+// Work Plan and Deliverables pages and in the news posts; when the status
+// changes, update this wording and those pages together.
 export default function FundingStatus(): ReactNode {
   return (
     <p>
