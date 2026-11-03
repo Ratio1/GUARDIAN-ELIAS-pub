@@ -34,18 +34,23 @@ allows `>=22 <25`).
 
 ```bash
 npm ci
-npm start        # local dev server with live reload
-npm run build    # production build into build/
-npm run serve    # serve the production build (binds 0.0.0.0:3000)
+npm run dev        # development server with live reload (localhost:3000)
+npm run build      # production build into build/
+npm start          # production server for build/ on 0.0.0.0:3000
 npm run typecheck
 ```
 
+`npm start` and `npm run serve` are the same command: the production server
+used on the live site, with its security headers, caching rules and automatic
+restart. Set `PORT` to use a different port.
+
 ## Branch model
 
-- `main` — the working branch. All content and configuration changes land
-  here first.
-- `release` — the deployed branch. The Ratio1 Deeploy Worker App Runner
-  tracks `release`, not `main`, so a push to `main` does not publish by
-  itself; content reaches `release` only via a reviewed merge.
+- `main` is the working branch **and** the deployed branch. The Ratio1
+  Deeploy Worker App Runner job tracks `main`, so every push to `main` is
+  published, usually within a few minutes.
+- Make changes on a separate branch and open a pull request against `main`;
+  the CI workflow builds every pull request. Merge only reviewed changes.
+- To undo a published change, revert the commit on `main` (see `DEPLOY.md`).
 
-See `DEPLOY.md` for deployment notes.
+See `DEPLOY.md` for the deployment, server and monitoring details.
