@@ -18,6 +18,23 @@
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
+/* Footer: EU emblem with the funding statement, funding disclaimer and
+   licence line. The emblem keeps its proportions at any width and sits on
+   its own, with clear space around it. */
+.footer__logo {
+  height: auto;
+  margin-top: 0.5rem;
+}
+
+.footer__eu-disclaimer {
+  max-width: 48rem;
+  margin: 0 auto 0.75rem;
+}
+
+.footer__licence {
+  margin: 0;
+}
+
 [data-theme='dark'] {
   --ifm-color-primary: #25c2a0;
   --ifm-color-primary-dark: #21af90;

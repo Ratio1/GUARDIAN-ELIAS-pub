@@ -142,7 +142,20 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Naeural SRL. Site content licensed under CC BY 4.0 (see LICENSE-content.md); site configuration code licensed under MIT (see LICENSE).`,
+      // European Union emblem with the funding statement, shown on every
+      // page. It is the official "Funded by the European Union" file in its
+      // version for dark backgrounds, used unmodified and without a link so
+      // that it stays distinct and separate from other marks.
+      logo: {
+        alt: 'European Union emblem with the statement “Funded by the European Union”',
+        src: 'img/eu-emblem-funded-by-the-eu.png',
+        width: 251,
+        height: 56,
+      },
+      copyright: [
+        '<p class="footer__eu-disclaimer">Funded by the European Union. Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union or the granting authority. Neither the European Union nor the granting authority can be held responsible for them.</p>',
+        `<p class="footer__licence">Copyright © ${new Date().getFullYear()} Naeural SRL. Site content licensed under CC BY 4.0, excluding the EU emblem and other names, logos and marks (see LICENSE-content.md); site configuration code licensed under MIT (see LICENSE).</p>`,
+      ].join(''),
     },
     prism: {
       theme: prismThemes.github,
