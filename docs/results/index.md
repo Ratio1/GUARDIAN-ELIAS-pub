@@ -12,6 +12,13 @@ description: Publications released by the GUARDIAN project, and where measured r
 - [GUARDIAN progresses with MONSSON and Hyperfy](/blog/guardian-progressing-with-monsson-and-hyperfy)
   — project update, November 2026.
 
+## Datasets
+
+- [GUARDIAN Second Opinion Dataset 1, public subset](https://huggingface.co/datasets/ratio1/guardian_second_opinion_ds_1_public)
+  — 19 cropped camera frames of alerts tagged as false alarms, from the
+  physical-security pilot, published in November 2026 with written
+  permission under the CC BY-NC 4.0 licence.
+
 ## Measured results
 
 As of November 2026, no measured results have been published. Work with

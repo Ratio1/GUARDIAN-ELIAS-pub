@@ -54,6 +54,11 @@ identification or live dispatch. The work uses approved partner, derived,
 anonymized or synthetic data, and no raw operational data or security
 media are published.
 
+*Update, 20 November 2026: one set of examples from the physical-security
+pilot has since been published with written permission: 19 cropped camera
+frames of alerts tagged as false alarms, the
+[GUARDIAN Second Opinion Dataset 1, public subset](https://huggingface.co/datasets/ratio1/guardian_second_opinion_ds_1_public).*
+
 ## What comes next
 
 The validation work feeds two reports planned for November 2026 — the

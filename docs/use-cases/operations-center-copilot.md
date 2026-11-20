@@ -29,8 +29,16 @@ incident-note drafting and response-queue explanation.
 
 The demonstrator uses metadata, derived events, anonymized examples or
 synthetic scenarios. Raw security media is used only with written
-approval, and no raw media, dispatch logs, identifiable images or
-incident records are published.
+approval.
+
+One set of examples from this pilot is public: 19 camera frames of
+alerts that were tagged as false alarms, cropped to remove the text
+strips and published with written permission under the CC BY-NC 4.0
+licence as the
+[GUARDIAN Second Opinion Dataset 1, public subset](https://huggingface.co/datasets/ratio1/guardian_second_opinion_ds_1_public).
+The 19 frames were selected to show no person and no readable number
+plate, name or logo. No other security media, dispatch logs or incident
+records are published.
 
 ## Boundaries
 

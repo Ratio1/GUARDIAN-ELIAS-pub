@@ -26,8 +26,11 @@ period on 31 December 2026:
   results beyond the project.
 
 Any published data is limited to synthetic, anonymized, aggregated or
-partner-approved derived examples. Raw operational data, security media
-and incident records are not published.
+partner-approved derived examples. The only security media published are
+19 cropped camera frames of alerts tagged as false alarms, released with
+written permission as the
+[GUARDIAN Second Opinion Dataset 1, public subset](https://huggingface.co/datasets/ratio1/guardian_second_opinion_ds_1_public).
+Raw operational data and incident records are not published.
 
 The project starts from technology readiness level (TRL) 4 and targets
 TRL 5 through validation in an industrially relevant environment. TRL 5
