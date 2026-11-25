@@ -13,7 +13,8 @@
     "serve": "node scripts/supervise.mjs",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "test:node-id": "node --test scripts/node-id.test.mjs"
   },
   "dependencies": {
     "@docusaurus/core": "3.10.2",

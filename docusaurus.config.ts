@@ -1,6 +1,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import {nodeFooterHtml} from './scripts/node-id.mjs';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -155,6 +156,8 @@ const config: Config = {
       copyright: [
         '<p class="footer__eu-disclaimer">Funded by the European Union. Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union or the granting authority. Neither the European Union nor the granting authority can be held responsible for them.</p>',
         `<p class="footer__licence">Copyright © ${new Date().getFullYear()} Naeural SRL. Site content licensed under CC BY 4.0, excluding the EU emblem and other names, logos and marks (see LICENSE-content.md); site configuration code licensed under MIT (see LICENSE).</p>`,
+        // Empty unless the build's environment gives a valid node id (see scripts/node-id.mjs).
+        nodeFooterHtml(process.env),
       ].join(''),
     },
     prism: {

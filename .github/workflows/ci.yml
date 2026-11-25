@@ -31,8 +31,16 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Test the node id check
+        run: npm run test:node-id
+
       - name: Build
         run: npm run build
+
+      - name: Check that a build without a node id shows no node line
+        run: |
+          set -euo pipefail
+          ! grep -q 'Running on Ratio1' build/index.html
 
       - name: Smoke-test the production server
         run: |
@@ -62,3 +70,9 @@ jobs:
 
       - name: Check the production server for file-descriptor leaks
         run: node scripts/check-fd-leak.mjs
+
+      - name: Build with a node id and check the footer line
+        run: |
+          set -euo pipefail
+          R1EN_HOST_ID=ci-node-01 npm run build
+          test "$(grep -o 'Running on Ratio1 low-resource edge-node ci-node-01' build/index.html | wc -l)" = 1

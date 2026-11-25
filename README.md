@@ -41,7 +41,11 @@ Everything in this repository is public once pushed.
   distinct and separate, do not combine it with other marks, text or
   links, use no other logo to highlight EU support, and show it at least
   as prominently as any other logo displayed with it. Keep the disclaimer
-  wording unchanged.
+  wording unchanged. When the build's environment gives a valid node id, the
+  footer also shows a text line with that id below the licence line, never
+  next to the emblem (see `DEPLOY.md`). The node's id is published on purpose.
+  No other detail of the node is published: not its address, not its
+  resources, not the tunnel's settings.
 - Do not add any other third-party logo or mark without explicit approval
   for that use.
 - Describe work in progress as in progress. Do not claim measured results,

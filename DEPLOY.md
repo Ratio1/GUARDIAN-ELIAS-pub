@@ -19,6 +19,26 @@ hostname.
   on every pull request, so a change can be reviewed and seen to build before
   it is merged and published.
 
+## Edge Node line in the footer
+
+The footer of every page can show one more line, below the licence line:
+"Running on Ratio1 low-resource edge-node" followed by a node id. The id is
+read when the site is built, from the `R1EN_HOST_ID` environment variable that
+the node's runner sets in the job container. `EE_HOST_ID`, the older name for
+the same value, is read if the first is not valid. The first of the two that is
+valid is used. Valid means 1 to 64 characters of the ASCII letters A-Z and
+a-z, the digits 0-9, `.`, `_` and `-`. If neither is valid, no line is shown.
+A normal local or CI build sets neither variable and shows no line. The line
+shows what the build's environment said. Because the id is part of the built
+pages, each rebuild reflects that build's environment; it may show a different
+id, the same id, or no line.
+
+The words "low-resource" are the project's term for the nodes the site is
+meant to run on: Ratio1 Edge Nodes of the low-power class named in the
+project proposal (2 to 8 cores, 8 to 16 GB of memory). The build does not
+check the node's size. Whoever moves the job to another node checks that the
+node is of that class.
+
 ## Recommended job settings
 
 Apply these in the job's settings in the Deeploy console.
@@ -27,6 +47,7 @@ Apply these in the job's settings in the Deeploy console.
 | --- | --- |
 | Repository | `https://github.com/Ratio1/GUARDIAN-ELIAS-pub` |
 | Branch | `main` |
+| Target node | One named node, with auto-assignment off |
 | Image | `node:22` |
 | Commands | `npm install`, `npm run build`, `npm start` (the WAR defaults) |
 | Container port | `3000` |
@@ -89,11 +110,14 @@ Apply these in the job's settings in the Deeploy console.
   `/assets/` are sent with `Cache-Control: public, max-age=31536000,
   immutable`. The server lists those files in `build/assets/` at startup and
   matches the decoded, normalised request path against that list, so no
-  other file is ever cached as immutable. Everything else (HTML pages, images
-  in `/img/`, the search index, feeds, the sitemap, 404 and error responses)
-  is sent with `Cache-Control: no-cache` and a `Last-Modified` date, so
-  browsers check with the server before reusing a copy and always see the
-  current version. As with `docusaurus serve`, no `ETag` is sent and every
+  other file is ever cached as immutable. Everything else that the file
+  handler serves (HTML pages, images in `/img/`, the search index, feeds, the
+  sitemap and the 404 page) is sent with `Cache-Control: no-cache` and a
+  `Last-Modified` date, so browsers check with the server before reusing a
+  copy and always see the current version.
+  The server's own `400` (rejected path), `405` (method not allowed) and `301`
+  (HTTPS redirect) answers are sent with `Cache-Control: no-store` and no
+  `Last-Modified`. As with `docusaurus serve`, no `ETag` is sent and every
   request gets the full file rather than `304 Not Modified`.
 - **HTTP to HTTPS.** When the Cloudflare `CF-Visitor` request header reports
   that the visitor used plain HTTP and the request's `Host` is one of the
@@ -146,11 +170,14 @@ activity; re-enable the workflow from the Actions tab if that happens.
 ## Continuous integration
 
 The `CI` workflow (`.github/workflows/ci.yml`) runs on every push to `main`
-and on every pull request: `npm ci`, `npm run typecheck`, `npm run build`,
-a smoke test of the production server (headers, 404, rejected `..` paths,
-caching and the HTTPS redirect), and `scripts/check-fd-leak.mjs`, which
+and on every pull request: `npm ci`, `npm run typecheck`, the unit test of the
+node id check (`npm run test:node-id`), `npm run build` (checking that no node
+line is shown), a smoke test of the production server (headers, 404, rejected
+`..` paths, caching and the HTTPS redirect), and `scripts/check-fd-leak.mjs`, which
 sends repeated conditional requests and aborted downloads to the server and
-fails if its count of open file descriptors grows. It uses the Node.js
+fails if its count of open file descriptors grows. A last step builds the site
+again with `R1EN_HOST_ID=ci-node-01` and checks that the home page holds the
+footer line once. It uses the Node.js
 version in `.nvmrc`, and its third-party actions are pinned to full commit
 SHAs.
 
