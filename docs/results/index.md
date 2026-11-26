@@ -21,8 +21,16 @@ description: Publications released by the GUARDIAN project, and where measured r
 
 ## Measured results
 
-As of November 2026, no measured results have been published. Work with
-MONSSON and Hyperfy (GOC) is in progress.
+As of 26 November 2026, no measured results have been published, and no
+benchmark result exists. Work with MONSSON and Hyperfy (GOC) is in progress.
+The D2 prototype has been run on two machines, a workstation and a Ratio1 Edge
+Node, as a trial of the prototype itself; the data package of the run on the
+Edge Node is being checked, and the trial is not a benchmark result. The
+scored runs for D3 and D4 have not started. The energy pilot has received no
+partner data, so its first results will use synthetic cases and will say so.
+The page [Deliverables](../project/deliverables.md#where-the-project-stands)
+describes what exists for each of the first four deliverables, D1 to D4, on
+that date.
 
 Outputs approved for public release — the benchmark protocol, validation
 report summaries, the public summary, the demo video and any further
