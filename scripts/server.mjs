@@ -12,7 +12,13 @@
 //   health checks) and requests for other hosts are served directly, so there
 //   is no redirect loop behind the tunnel.
 //
-// Environment: PORT (default 3000), HOST (default 0.0.0.0),
+// - Answers GET /node-line.json with the footer line that names the Edge Node
+//   the site runs on ({"running_on": "<sentence>"}, or {"running_on": null}
+//   when the environment gives no valid node id; see scripts/node-id.mjs).
+//   The site's own script fetches it and fills the footer.
+//
+// Environment: R1EN_HOST_ID / EE_HOST_ID (the node's id, set by the node's
+//              runner), PORT (default 3000), HOST (default 0.0.0.0),
 //              HSTS_MAX_AGE (seconds, default 86400),
 //              CANONICAL_HOSTS (comma-separated hostnames that may be
 //              redirected to HTTPS, default "edge-guardian.eu,www.edge-guardian.eu").
@@ -26,6 +32,7 @@ import http from 'node:http';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import serveHandler from 'serve-handler';
+import {nodeLineFromEnv} from './node-id.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BUILD_DIR = path.join(ROOT, 'build');
@@ -124,7 +131,7 @@ function buildCsp(scriptHashes) {
 
 for (const required of ['index.html', '404.html']) {
   if (!fs.existsSync(path.join(BUILD_DIR, required))) {
-    log(`missing ${path.join(BUILD_DIR, required)}; run "npm run build" first`);
+    log(`missing ${path.join(BUILD_DIR, required)}; build/ is committed with the sources (see DEPLOY.md)`);
     process.exit(1);
   }
 }
@@ -139,6 +146,8 @@ const SECURITY_HEADERS = {
   'X-Frame-Options': 'DENY',
   'Cross-Origin-Opener-Policy': 'same-origin',
 };
+
+const NODE_LINE_BODY = JSON.stringify({running_on: nodeLineFromEnv(process.env)}) + '\n';
 
 const HASHED_ASSETS = hashedAssetPaths(BUILD_DIR);
 const HASHED_ASSET_CACHE = 'public, max-age=31536000, immutable';
@@ -202,6 +211,16 @@ function handle(req, res) {
     }
   }
 
+  if (pathname === '/node-line.json') {
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Length': Buffer.byteLength(NODE_LINE_BODY),
+      'Cache-Control': 'no-store',
+    });
+    res.end(req.method === 'HEAD' ? undefined : NODE_LINE_BODY);
+    return;
+  }
+
   // Cache policy depends on the file served and the final status, so decide it
   // when headers are written. serve-handler serves the file at the normalised
   // decoded path, so only real content-hashed files are cached as immutable.
@@ -254,7 +273,7 @@ server.on('error', (err) => {
 
 server.listen(PORT, HOST, () => {
   log(
-    `serving ${BUILD_DIR} on http://${HOST}:${PORT} (${scriptHashes.length} inline script hash(es) in CSP, ` +
+    `serving ${BUILD_DIR} on http://${HOST}:${PORT} (node line: ${NODE_LINE_BODY.trim()}; ${scriptHashes.length} inline script hash(es) in CSP, ` +
       `${HASHED_ASSETS.size} immutable asset(s), HTTPS redirect for ${[...CANONICAL_HOSTS].join(', ')})`,
   );
 });

@@ -1,7 +1,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-import {nodeFooterHtml} from './scripts/node-id.mjs';
+import {NODE_LINE_ELEMENT_ID} from './src/clientModules/nodeLineElement.mjs';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -15,9 +15,10 @@ const config: Config = {
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
     faster: {
-      // The production host builds from a fresh clone on every deploy, so an
-      // on-disk bundler cache is never reused; disabling it cuts peak build
-      // memory by roughly 90 MB and keeps the build within a 512 MB container.
+      // The site is built from a clean checkout (in CI, and locally after
+      // `npm run clear`), so an on-disk bundler cache is not reused; disabling
+      // it cuts peak build memory by roughly 90 MB and keeps the build within
+      // a 512 MB container.
       rspackPersistentCache: false,
     },
   },
@@ -49,6 +50,8 @@ const config: Config = {
     defaultLocale: 'en',
     locales: ['en'],
   },
+
+  clientModules: ['./src/clientModules/nodeLine.mjs'],
 
   presets: [
     [
@@ -155,14 +158,31 @@ const config: Config = {
       },
       copyright: [
         '<p class="footer__eu-disclaimer">Funded by the European Union. Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union or the granting authority. Neither the European Union nor the granting authority can be held responsible for them.</p>',
-        `<p class="footer__licence">Copyright © ${new Date().getFullYear()} Naeural SRL. Site content licensed under CC BY 4.0, excluding the EU emblem and other names, logos and marks (see LICENSE-content.md); site configuration code licensed under MIT (see LICENSE).</p>`,
-        // Empty unless the build's environment gives a valid node id (see scripts/node-id.mjs).
-        nodeFooterHtml(process.env),
+        `<p class="footer__licence">Copyright © 2026 Naeural SRL. Site content licensed under CC BY 4.0, excluding the EU emblem and other names, logos and marks (see LICENSE-content.md); site configuration code licensed under MIT (see LICENSE).</p>`,
+        // Empty in the built pages. The server answers /node-line.json when it
+        // knows the node's id, and src/clientModules/nodeLine.mjs fills this
+        // paragraph with it (see scripts/node-id.mjs and DEPLOY.md).
+        `<p class="footer__node" id="${NODE_LINE_ELEMENT_ID}" hidden></p>`,
       ].join(''),
     },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
+    },
+    // The defaults of the docs, blog and Mermaid themes, written out in a fixed
+    // order. Left implicit, the order in which the themes add them to the
+    // configuration can vary between builds, and with it the name of the main
+    // script, which would make two builds of the same sources differ.
+    docs: {
+      versionPersistence: 'localStorage',
+      sidebar: {hideable: false, autoCollapseCategories: false},
+    },
+    blog: {
+      sidebar: {groupByYear: true},
+    },
+    mermaid: {
+      theme: {dark: 'dark', light: 'default'},
+      options: {},
     },
   } satisfies Preset.ThemeConfig,
 };

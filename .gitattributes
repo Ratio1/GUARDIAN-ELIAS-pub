@@ -1,0 +1,3 @@
+# The built site is committed byte for byte: no checkout setting may convert
+# a built file.
+build/** -text -diff linguist-generated=true

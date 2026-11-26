@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkguardian_public=self.webpackChunkguardian_public||[]).push([["8416"],{6600(a){a.exports=JSON.parse('{"authors":[{"name":"GUARDIAN team","title":"Naeural SRL (Ratio1)","url":"https://ratio1.ai","page":null,"key":"guardian-team","count":3}]}')}}]);

@@ -1,7 +1,7 @@
 // Run with `npm run test:node-id` (node --test).
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {escapeHtml, nodeFooterHtml, nodeIdFromEnv} from './node-id.mjs';
+import {nodeIdFromEnv, nodeLineFromEnv} from './node-id.mjs';
 
 test('a valid id is accepted', () => {
   assert.equal(nodeIdFromEnv({R1EN_HOST_ID: 'test-node-01'}), 'test-node-01');
@@ -21,9 +21,9 @@ test('an invalid R1EN_HOST_ID falls back to a valid EE_HOST_ID', () => {
   assert.equal(nodeIdFromEnv({R1EN_HOST_ID: 'a b', EE_HOST_ID: 'second'}), 'second');
 });
 
-test('nothing set gives no id and no footer line', () => {
+test('nothing set gives no id and no line', () => {
   assert.equal(nodeIdFromEnv({}), undefined);
-  assert.equal(nodeFooterHtml({}), '');
+  assert.equal(nodeLineFromEnv({}), null);
 });
 
 test('values that are not valid are rejected', () => {
@@ -41,7 +41,7 @@ test('values that are not valid are rejected', () => {
   for (const [name, value] of Object.entries(rejected)) {
     assert.equal(nodeIdFromEnv({R1EN_HOST_ID: value}), undefined, name);
     assert.equal(nodeIdFromEnv({EE_HOST_ID: value}), undefined, name);
-    assert.equal(nodeFooterHtml({R1EN_HOST_ID: value}), '', name);
+    assert.equal(nodeLineFromEnv({R1EN_HOST_ID: value}), null, name);
   }
 });
 
@@ -50,13 +50,9 @@ test('64 characters are accepted', () => {
   assert.equal(nodeIdFromEnv({R1EN_HOST_ID: id}), id);
 });
 
-test('the footer line holds the exact sentence', () => {
+test('the line holds the exact sentence', () => {
   assert.equal(
-    nodeFooterHtml({R1EN_HOST_ID: 'test-node-01'}),
-    '<p class="footer__node">Running on Ratio1 low-resource edge-node test-node-01</p>',
+    nodeLineFromEnv({R1EN_HOST_ID: 'test-node-01'}),
+    'Running on Ratio1 low-resource edge-node test-node-01',
   );
-});
-
-test('escapeHtml escapes the characters that have a meaning in HTML', () => {
-  assert.equal(escapeHtml(`<a href="x">&'</a>`), '&lt;a href=&quot;x&quot;&gt;&amp;&#39;&lt;/a&gt;');
 });

@@ -8,7 +8,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
@@ -230,3 +229,8 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+
+# The built site is committed in full (see DEPLOY.md): no pattern above may
+# drop a file from it.
+!/build/
+!/build/**

@@ -9,7 +9,7 @@
 //      as the request is sent or part-way through the response.
 // After each phase it counts the server process's open file descriptors in
 // /proc/<pid>/fd and exits with status 1 if the count has grown by more than
-// a small tolerance. Needs a built site in build/ (`npm run build`).
+// a small tolerance. Needs a built site in build/ (the committed one, or `npm run build:site`).
 //
 // Usage: node scripts/check-fd-leak.mjs [server-script] [requests]
 //   requests: number of conditional requests in phase 1 (default 600).
@@ -124,7 +124,7 @@ function tally(results) {
 
 async function main() {
   if (!fs.existsSync(path.join(BUILD_DIR, 'index.html'))) {
-    console.error(`no built site in ${BUILD_DIR}; run "npm run build" first`);
+    console.error(`no built site in ${BUILD_DIR}; run "npm run build:site" first`);
     return 2;
   }
   const port = await freePort();

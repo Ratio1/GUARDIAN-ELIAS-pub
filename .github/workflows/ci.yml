@@ -25,54 +25,42 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      - name: Install dependencies
-        run: npm ci --no-fund
+      - name: Install dependencies (with the development packages)
+        run: npm ci --include=dev --no-fund
 
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Test the node id check
-        run: npm run test:node-id
+      - name: Tests
+        run: npm test
 
-      - name: Build
-        run: npm run build
-
-      - name: Check that a build without a node id shows no node line
+      - name: Rebuild the site and compare it with the committed build
         run: |
           set -euo pipefail
-          ! grep -q 'Running on Ratio1' build/index.html
+          npm run build:site
+          # A build from this clean checkout must reproduce the committed
+          # build/ exactly: no file changed, missing, added or dropped by
+          # .gitignore.
+          drift="$(git status --porcelain --ignored --untracked-files=all -- build)"
+          if [ -n "$drift" ]; then
+            printf '%s\n' "$drift" | head -50
+            echo "The committed build/ is not the build these sources produce."
+            echo "Fix: run 'npm ci --include=dev && npm run clear && npm run build:site' and commit build/ with the sources."
+            exit 1
+          fi
+          npm run check:sources
+          npm run check:build
+          # The built pages carry no node line; the server adds it at run time.
+          if grep -rq 'Running on Ratio1' build; then
+            echo "The built pages contain a node line."; exit 1
+          fi
+          # The footer paragraph and the script that fills it share one name.
+          id="$(node -e "import('./src/clientModules/nodeLineElement.mjs').then((m) => console.log(m.NODE_LINE_ELEMENT_ID))")"
+          grep -q "getElementById(\"$id\")" build/assets/js/main.*.js
+          grep -q '/node-line.json' build/assets/js/main.*.js
 
-      - name: Smoke-test the production server
-        run: |
-          set -euo pipefail
-          PORT=3000 node scripts/server.mjs > server.log 2>&1 &
-          for _ in $(seq 1 30); do
-            curl -fsS -o /dev/null http://127.0.0.1:3000/ && break
-            sleep 1
-          done
-          curl -fsS -D headers.txt -o /dev/null http://127.0.0.1:3000/
-          for h in content-security-policy strict-transport-security x-content-type-options x-frame-options; do
-            grep -qi "^$h:" headers.txt || { echo "missing header: $h"; exit 1; }
-          done
-          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/no-such-page)" = 404
-          # Paths with a `..` segment are rejected, also when percent-encoded,
-          # and only real content-hashed files are cached as immutable.
-          test "$(curl -s -o /dev/null -w '%{http_code}' --path-as-is 'http://127.0.0.1:3000/assets/%2e%2e/search-index.json')" = 400
-          curl -fsS -D index-headers.txt -o /dev/null 'http://127.0.0.1:3000/%73earch-index.json'
-          grep -qi '^cache-control: no-cache' index-headers.txt
-          redirect="$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' \
-            -H 'Host: edge-guardian.eu' -H 'CF-Visitor: {"scheme":"http"}' http://127.0.0.1:3000/docs/about/)"
-          test "$redirect" = "301 https://edge-guardian.eu/docs/about/"
-          # Hosts outside CANONICAL_HOSTS are served without a redirect.
-          test "$(curl -s -o /dev/null -w '%{http_code}' \
-            -H 'Host: other.example' -H 'CF-Visitor: {"scheme":"http"}' http://127.0.0.1:3000/docs/about/)" = 200
-          cat server.log
+      - name: Check the footer paragraph in the markup of every built page
+        run: node scripts/check-footer.mjs
 
-      - name: Check the production server for file-descriptor leaks
-        run: node scripts/check-fd-leak.mjs
-
-      - name: Build with a node id and check the footer line
-        run: |
-          set -euo pipefail
-          R1EN_HOST_ID=ci-node-01 npm run build
-          test "$(grep -o 'Running on Ratio1 low-resource edge-node ci-node-01' build/index.html | wc -l)" = 1
+      - name: Simulate the node (clean clone, plain npm install, npm run build, npm start)
+        run: bash scripts/node-checks.sh

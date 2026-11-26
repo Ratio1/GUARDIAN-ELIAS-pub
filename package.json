@@ -6,7 +6,12 @@
     "docusaurus": "docusaurus",
     "start": "node scripts/supervise.mjs",
     "dev": "docusaurus start",
-    "build": "docusaurus build",
+    "build": "node scripts/prebuilt.mjs",
+    "build:site": "node scripts/source-stamp.mjs --require-clean && docusaurus build && node scripts/source-stamp.mjs --write && node scripts/build-manifest.mjs --write",
+    "check:sources": "node scripts/source-stamp.mjs --check",
+    "check:build": "node scripts/build-manifest.mjs --check",
+    "verify": "bash scripts/verify.sh",
+    "verify:docker": "bash scripts/verify-in-docker.sh",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
@@ -14,26 +19,27 @@
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
+    "test": "node --test scripts/*.test.mjs",
     "test:node-id": "node --test scripts/node-id.test.mjs"
   },
   "dependencies": {
+    "serve-handler": "6.1.7"
+  },
+  "devDependencies": {
     "@docusaurus/core": "3.10.2",
     "@docusaurus/faster": "3.10.2",
+    "@docusaurus/module-type-aliases": "3.10.2",
     "@docusaurus/preset-classic": "3.10.2",
     "@docusaurus/theme-mermaid": "3.10.2",
+    "@docusaurus/tsconfig": "3.10.2",
+    "@docusaurus/types": "3.10.2",
     "@easyops-cn/docusaurus-search-local": "0.55.2",
     "@mdx-js/react": "3.1.1",
+    "@types/react": "19.2.17",
     "clsx": "2.1.1",
     "prism-react-renderer": "2.4.1",
     "react": "19.2.7",
     "react-dom": "19.2.7",
-    "serve-handler": "6.1.7"
-  },
-  "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.10.2",
-    "@docusaurus/tsconfig": "3.10.2",
-    "@docusaurus/types": "3.10.2",
-    "@types/react": "19.2.17",
     "typescript": "6.0.3"
   },
   "overrides": {
