@@ -18,7 +18,7 @@ which runs from July to December 2026.
 
 ## Where the project stands
 
-This is the position on 26 November 2026, described for D1 to D4 by what
+This is the position on 27 November 2026, described for D1 to D4 by what
 exists today. The benchmark has not yet been run in scored form, so no
 benchmark result exists, and none is reported on this page. A scored run is
 one whose answers are compared with a trusted record and counted.
@@ -46,10 +46,30 @@ workstation as a trial of the prototype itself. The trial showed that the
 whole chain works from the first question to the scored data package. On
 26 November 2026 the same trial also ran to the end on a Ratio1 Edge Node,
 where the job was limited to three processor cores and 12 GiB of memory, so
-the prototype has now been run on two machines. The data package of that run is
-being checked and scored. Both runs are trials of the prototype, not
-benchmark results. The report on the prototype is in preparation. D2 was
-planned for September 2026 and is also behind its planned date.
+the prototype has now been run on two machines. The data package of that run has
+been checked and scored on the workstation. Both runs are trials of the
+prototype, not benchmark results. The report on the prototype is written and
+has not yet been released. D2 was planned for September 2026 and is also
+behind its planned date.
+
+**An online test app.** Since 26 November 2026 a small test app is online at
+[app.edge-guardian.eu/app](https://app.edge-guardian.eu/app), served by the
+prototype on the Ratio1 Edge Node. A visitor can put a question to one of two
+small open models: whether an alert from a perimeter camera is genuine, or
+whether an energy forecast is plausible. The model answers with a verdict and
+a one-sentence reason; replies that cannot be read are shown and counted, not
+hidden. The app uses public material only: the 19 published alert frames of
+[the public dataset](https://huggingface.co/datasets/ratio1/guardian_second_opinion_ds_1_public),
+in their annotated view, and invented forecast cases. It
+has three tabs: alert review (the scenario of D4), forecast review (the
+scenarios of D3) and the state of the prototype on that machine (D2). One
+question is answered at a time, a few may wait, and the number of questions
+per hour is limited; an answer usually takes between ten seconds and a minute.
+An answer on the app is a test of the prototype. It is not a benchmark result
+and is kept apart from the benchmark's records, and because every published
+alert was recorded as a false alarm, a single answer measures nothing about a
+model. The app does not answer while the prototype runs a benchmark campaign
+on the same machine, and it can be unavailable for short periods.
 
 **D3, review of renewable-energy forecasts (planned for November 2026, the
 fifth project month).** A set of 80 synthetic cases is ready. A synthetic
