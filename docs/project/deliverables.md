@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-description: GUARDIAN's five deliverables, D1 to D5, with their planned timing in the July–December 2026 project period, and where D1 to D4 stand on 26 November 2026.
+description: GUARDIAN's five deliverables, D1 to D5, with their planned timing in the July–December 2026 project period, and where D1 to D4 stand on 27 November 2026.
 ---
 
 # Deliverables
@@ -46,8 +46,7 @@ workstation as a trial of the prototype itself. The trial showed that the
 whole chain works from the first question to the scored data package. On
 26 November 2026 the same trial also ran to the end on a Ratio1 Edge Node,
 where the job was limited to three processor cores and 12 GiB of memory, so
-the prototype has now been run on two machines. The data package of that run has
-been checked and scored on the workstation. Both runs are trials of the
+the prototype has now been run on two machines. The data package of that run has been checked and read by the project's scoring program on the workstation, without any problem reported. Both runs are trials of the
 prototype, not benchmark results. The report on the prototype is written and
 has not yet been released. D2 was planned for September 2026 and is also
 behind its planned date.
@@ -56,20 +55,10 @@ behind its planned date.
 [app.edge-guardian.eu/app](https://app.edge-guardian.eu/app), served by the
 prototype on the Ratio1 Edge Node. A visitor can put a question to one of two
 small open models: whether an alert from a perimeter camera is genuine, or
-whether an energy forecast is plausible. The model answers with a verdict and
-a one-sentence reason; replies that cannot be read are shown and counted, not
-hidden. The app uses public material only: the 19 published alert frames of
+whether an energy forecast is plausible. The app asks the model for a verdict and a one-sentence reason. If it cannot read the verdict, it marks the reply as unreadable and counts it. The reply is the model's own opinion, shown as it comes, and is not checked. The app uses public material only: the 19 published alert frames of
 [the public dataset](https://huggingface.co/datasets/ratio1/guardian_second_opinion_ds_1_public),
-in their annotated view, and invented forecast cases. It
-has three tabs: alert review (the scenario of D4), forecast review (the
-scenarios of D3) and the state of the prototype on that machine (D2). One
-question is answered at a time, a few may wait, and the number of questions
-per hour is limited; an answer usually takes between ten seconds and a minute.
-An answer on the app is a test of the prototype. It is not a benchmark result
-and is kept apart from the benchmark's records, and because every published
-alert was recorded as a false alarm, a single answer measures nothing about a
-model. The app does not answer while the prototype runs a benchmark campaign
-on the same machine, and it can be unavailable for short periods.
+in their annotated view, and invented forecast cases. It has three tabs: alert review (the kind of question planned for D4), forecast review (the kind of question planned for D3) and the state of the prototype on that machine (the subject of D2). The app handles one question at a time. Up to three more can wait, and the app accepts up to 30 questions an hour across all visitors.
+An answer on the app is a test of the prototype. It is not a benchmark result and is kept apart from the benchmark's records. A single answer measures nothing about a model: every published alert was recorded as a false alarm, the forecast cases are invented, and one answer is one observation, not a count compared with a trusted record. The project does not run a benchmark campaign on this machine while the test app is enabled; for a campaign the app is taken offline, so it can be unavailable for some hours.
 
 **D3, review of renewable-energy forecasts (planned for November 2026, the
 fifth project month).** A set of 80 synthetic cases is ready. A synthetic
